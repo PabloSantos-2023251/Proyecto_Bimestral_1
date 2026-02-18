@@ -2,6 +2,13 @@ drop database if exists proyecto_metro_in5cm;
 create database proyecto_metro_in5cm;
 use proyecto_metro_in5cm;
 
+create table Lineas (
+    id_linea int primary key auto_increment,
+    nombre_linea varchar(50) not null,
+    color varchar(30),
+    longitud_km decimal(5,2)
+);
+
 create table personal (
     id_personal int primary key auto_increment,
     nombre varchar(100),
@@ -33,6 +40,13 @@ create table horarios (
     FOREIGN KEY (id_tren) REFERENCES trenes(id_tren)
 );
 
+create table Estaciones (
+    id_estacion int primary key auto_increment,
+    nombre varchar(50) not null,
+    zona varchar(30),
+    id_linea int,
+    foreign key (id_linea) references Lineas(id_linea)
+);
 
 create table trenes (
     id_tren int auto_increment primary key,
@@ -144,3 +158,59 @@ end //
 
 
 DELIMITER ;
+
+-- CRUD de Lineas y Estaciones 
+Delimiter //
+create procedure sp_crear_linea(in _id int, in _nombre varchar(50), in _color varchar(30), in _longitud decimal(5,2))
+begin
+    insert into lineas (id_linea, nombre_linea, color, longitud_km)
+    values (_id, _nombre, _color, _longitud);
+end //
+
+create procedure sp_leer_linea(in _id int)
+begin
+    select * from lineas where id_linea = _id;
+end //
+
+create procedure sp_actualizar_linea(in _id int, in _nombre varchar(50), in _color varchar(30), in _longitud decimal(5,2))
+begin
+    update lineas 
+    set nombre_linea = _nombre,
+        color = _color,
+        longitud_km = _longitud
+    where id_linea = _id;
+end //
+
+create procedure sp_eliminar_linea(in _id int)
+begin
+    delete from lineas where id_linea = _id;
+end //
+delimiter ; 
+
+-- CRUD de Estaciones 
+Delimiter //
+create procedure sp_crear_estacion(in _id int, in _nombre varchar(100), in _ubicacion varchar(150), in _id_linea int)
+begin
+    insert into estaciones (id_estacion, nombre_estacion, ubicacion, id_linea)
+    values (_id, _nombre, _ubicacion, _id_linea);
+end //
+
+create procedure sp_leer_estacion(in _id int)
+begin
+    select * from estaciones where id_estacion = _id;
+end //
+
+create procedure sp_actualizar_estacion(in _id int, in _nombre varchar(100), in _ubicacion varchar(150), in _id_linea int)
+begin
+    update estaciones
+    set nombre_estacion = _nombre,
+        ubicacion = _ubicacion,
+        id_linea = _id_linea
+    where id_estacion = _id;
+end //
+
+create procedure sp_eliminar_estacion(in _id int)
+begin
+    delete from estaciones where id_estacion = _id;
+end //
+Delimiter ; 
