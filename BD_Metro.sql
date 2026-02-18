@@ -7,7 +7,18 @@ create table personal (
     nombre varchar(100),
     cargo varchar(50)
 );
-
+create table trenes (
+    id_tren int auto_increment primary key,
+    modelo varchar(50) not null,
+    capacidad_pasajeros int not null,
+    estado varchar(30) not null
+);
+create table conductores (
+    id_conductor int auto_increment primary key,
+    nombre varchar(100) not null,
+    licencia varchar(50) not null,
+    anos_experiencia int not null
+);
 create table impacto_trafico (
     id_impacto int primary key auto_increment,
     zona varchar(100),
@@ -61,6 +72,16 @@ create procedure sp_leer_impacto(in _id int)
 begin
     select * from impacto_trafico where id_impacto = _id;
 end //
+-- CRUD: TRENES
+create procedure sp_crear_tren(in _id int, in _modelo varchar(50), in _capacidad int, in _estado varchar(30))
+begin
+    insert into trenes(id_tren, modelo, capacidad_pasajeros, estado) values(_id, _modelo, _capacidad, _estado);
+end //
+
+create procedure sp_leer_tren(in _id int)
+begin
+    select * from trenes where id_tren = _id;
+end //
 
 -- Se crearon los procedimientos almacenados de Horarios - Miguel Santizo 
 create procedure sp_crear_horario(in _id int, in _salida time, in _llegada time, in _tren int)
@@ -104,6 +125,22 @@ create procedure sp_eliminar_mantenimiento(in _id int)
 begin
     delete from mantenimiento where id_mantenimiento = _id;
 end //
+-- CRUD: CONDUCTORES (Corregido nombre de columna anios_experiencia)
+create procedure sp_crear_conductor(in _id int, in _nombre varchar(100), in _licencia varchar(50), in _exp int)
+begin
+    insert into conductores(id_conductor, nombre, licencia, anos_experiencia) values(_id, _nombre, _licencia, _exp);
+end //
+
+create procedure sp_leer_conductor(in _id int)
+begin
+    select * from conductores where id_conductor = _id;
+end //
+
+create procedure sp_actualizar_conductor(in _id int, in _nombre varchar(100), in _licencia varchar(50), in _exp int)
+begin
+    update conductores set nombre = _nombre, licencia = _licencia, anos_experiencia = _exp where id_conductor = _id;
+end //
+
 
 
 DELIMITER ;
